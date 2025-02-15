@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatbox Example</title>
+    <title>Opium Chat</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -21,6 +21,11 @@
             height: 100%;
             width: 100%;
             box-sizing: border-box;
+        }
+        .title {
+            text-align: center;
+            font-size: 24px;
+            margin: 20px 0;
         }
         .chatbox {
             flex: 1;
@@ -62,6 +67,7 @@
 </head>
 <body>
     <div class="chat-container">
+        <div class="title">Opium Chat</div>
         <div class="chatbox" id="chatbox">
             <!-- Chat messages will appear here -->
         </div>
