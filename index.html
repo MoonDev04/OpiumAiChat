@@ -63,6 +63,46 @@
         .input-group button:hover {
             background-color: #0056b3;
         }
+        .script-panel {
+            background-color: #2e2e2e;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 10px;
+            width: 100%;
+            max-width: 50%;
+            box-sizing: border-box;
+            position: relative;
+        }
+        .script-panel .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .script-panel .header .title {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .script-panel .header .copy-button {
+            background-color: transparent;
+            border: none;
+            color: #007bff;
+            cursor: pointer;
+        }
+        .script-panel pre {
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            padding: 10px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-x: auto;
+        }
+        .script-panel pre code {
+            display: block;
+            line-height: 1.5;
+            font-family: 'Monaco', monospace;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -95,9 +135,17 @@
                 botMessage.textContent = 'Bot: Here is your script for "' + userInput + '":';
                 chatbox.appendChild(botMessage);
 
-                const scriptMessage = document.createElement('pre');
-                scriptMessage.textContent = responseScript;
-                chatbox.appendChild(scriptMessage);
+                // Create script panel
+                const scriptPanel = document.createElement('div');
+                scriptPanel.className = 'script-panel';
+                scriptPanel.innerHTML = `
+                    <div class="header">
+                        <div class="title">Script Output</div>
+                        <button class="copy-button" onclick="copyToClipboard()">Copy</button>
+                    </div>
+                    <pre><code>${responseScript}</code></pre>
+                `;
+                chatbox.appendChild(scriptPanel);
 
                 // Scroll to the bottom of the chatbox
                 chatbox.scrollTop = chatbox.scrollHeight;
@@ -120,6 +168,15 @@
                 console.error('Error fetching script:', error);
                 return 'Error fetching script.';
             }
+        }
+
+        function copyToClipboard() {
+            const code = document.querySelector('.script-panel pre code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('Script copied to clipboard!');
+            }).catch(err => {
+                console.error('Could not copy text: ', err);
+            });
         }
     </script>
 </body>
