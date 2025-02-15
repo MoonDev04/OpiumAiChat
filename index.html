@@ -22,6 +22,13 @@
             width: 100%;
             box-sizing: border-box;
         }
+        .title {
+            font-size: 12px;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #ffffff;
+        }
         .chatbox {
             flex: 1;
             border: 1px solid #333;
@@ -102,15 +109,23 @@
 </head>
 <body>
     <div class="chat-container">
+        <div class="title">Opium Chat</div>
         <div class="chatbox" id="chatbox">
             <!-- Chat messages will appear here -->
         </div>
         <div class="input-group">
             <input type="text" id="userInput" placeholder="Type a message...">
-            <button onclick="sendMessage()">Send</button>
+            <button id="sendButton">Send</button>
         </div>
     </div>
     <script>
+        document.getElementById('sendButton').addEventListener('click', sendMessage);
+        document.getElementById('userInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
         async function sendMessage() {
             const userInput = document.getElementById('userInput').value;
             const chatbox = document.getElementById('chatbox');
@@ -301,7 +316,7 @@ local function getNearestHead()
 local closestPlayer = nil
 local shortestDistance = math.huge
  
-for _, player in pairs(Players:GetPlayers()) do
+for (_, player) in pairs(Players:GetPlayers()) do
 if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
 local distance = (player.Character.HumanoidRootPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
 if distance < shortestDistance then
@@ -369,7 +384,7 @@ end)
 end
 end
  
-for _, player in pairs(Players:GetPlayers()) do
+for (_, player) in pairs(Players:GetPlayers()) do
 createESP(player)
 end
  
@@ -491,3 +506,8 @@ resetSuperpowers()  -- Reset all superpowers after 10 seconds`,
             }).catch(err => {
                 console.error('Could not copy text: ', err);
             });
+        }
+    </script>
+</body>
+</html>
+``` ▋
