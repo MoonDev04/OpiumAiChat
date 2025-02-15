@@ -22,11 +22,6 @@
             width: 100%;
             box-sizing: border-box;
         }
-        .title {
-            text-align: center;
-            font-size: 24px;
-            margin: 20px 0;
-        }
         .chatbox {
             flex: 1;
             border: 1px solid #333;
@@ -107,7 +102,6 @@
 </head>
 <body>
     <div class="chat-container">
-        <div class="title">Opium Chat</div>
         <div class="chatbox" id="chatbox">
             <!-- Chat messages will appear here -->
         </div>
@@ -188,7 +182,7 @@ local Player = nil -- Our target player
  
 local GetClosestPlayer = function() -- // Optimized GetClosestPlayer i believe?
     local ClosestDistance, ClosestPlayer = 100000, nil
-    for _, Player : Player in pairs(Players:GetPlayers()) do
+    for (_, Player) in pairs(Players:GetPlayers()) do
         if Player.Name ~= LocalPlayer.Name and Player.Character and Player.Character:FindFirstChild('HumanoidRootPart') then
             local Root, Visible = Camera:WorldToScreenPoint(Player.Character.HumanoidRootPart.Position)
             if not Visible then
@@ -254,7 +248,7 @@ local Player = nil -- Our target player
  
 local GetClosestPlayer = function() -- // Optimized GetClosestPlayer i believe?
     local ClosestDistance, ClosestPlayer = 100000, nil
-    for _, Player : Player in pairs(Players:GetPlayers()) do
+    for (_, Player) in pairs(Players:GetPlayers()) do
         if Player.Name ~= LocalPlayer.Name and Player.Character and Player.Character:FindFirstChild('HumanoidRootPart') then
             local Root, Visible = Camera:WorldToScreenPoint(Player.Character.HumanoidRootPart.Position)
             if not Visible then
@@ -442,7 +436,6 @@ local function activateJumpBoost()
 end
 
 -- Function to activate Strength Boost
-local function activateStrengthBoost()
 	-- Increase strength temporarily (PlatformStand should only be activated during specific actions)
 	humanoid.PlatformStand = true  -- This makes the player unable to move unless reset
 	-- You can apply force with other game mechanics (e.g., damage, attack force, etc.)
@@ -498,7 +491,3 @@ resetSuperpowers()  -- Reset all superpowers after 10 seconds`,
             }).catch(err => {
                 console.error('Could not copy text: ', err);
             });
-        }
-    </script>
-</body>
-</html>
