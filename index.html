@@ -71,7 +71,7 @@
         </div>
     </div>
     <script>
-        function sendMessage() {
+        async function sendMessage() {
             const userInput = document.getElementById('userInput').value;
             const chatbox = document.getElementById('chatbox');
             
@@ -81,8 +81,8 @@
                 userMessage.textContent = 'You: ' + userInput;
                 chatbox.appendChild(userMessage);
 
-                // Respond with actual scripts based on user input
-                let responseScript = generateScript(userInput);
+                // Fetch the script from the website
+                let responseScript = await fetchScript(userInput);
 
                 // Append bot response to chatbox
                 const botMessage = document.createElement('div');
@@ -101,30 +101,19 @@
             }
         }
 
-        function generateScript(input) {
-            if (input.toLowerCase().includes('fly script')) {
-                return `
-                    // Fly script
-                    function fly() {
-                        console.log("You are now flying!");
-                    }
-                    fly();`;
-            } else if (input.toLowerCase().includes('hello world')) {
-                return `
-                    // Hello World script
-                    console.log("Hello, World!");`;
-            } else {
-                return `
-                    // Generic script
-                    function ${generateFunctionName(input)}() {
-                        console.log("This is your script for ${input}");
-                    }
-                    ${generateFunctionName(input)}();`;
+        async function fetchScript(query) {
+            try {
+                const response = await fetch(`https://tropichub.vercel.app/api/search?query=${encodeURIComponent(query)}`);
+                const data = await response.json();
+                if (data && data.results && data.results.length > 0) {
+                    return data.results[0].script;
+                } else {
+                    return 'No script found for the given query.';
+                }
+            } catch (error) {
+                console.error('Error fetching script:', error);
+                return 'Error fetching script.';
             }
-        }
-
-        function generateFunctionName(input) {
-            return input.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
         }
     </script>
 </body>
