@@ -82,22 +82,7 @@
                 chatbox.appendChild(userMessage);
 
                 // Respond with actual scripts based on user input
-                let responseScript = '';
-                if (userInput.toLowerCase().includes('fly script')) {
-                    responseScript = `
-                    // Fly script
-                    function fly() {
-                        console.log("You are now flying!");
-                    }
-                    fly();`;
-                } else {
-                    responseScript = `
-                    // Generic script
-                    function ${generateFunctionName(userInput)}() {
-                        console.log("This is your script for ${userInput}");
-                    }
-                    ${generateFunctionName(userInput)}();`;
-                }
+                let responseScript = generateScript(userInput);
 
                 // Append bot response to chatbox
                 const botMessage = document.createElement('div');
@@ -113,6 +98,28 @@
 
                 // Clear the input field
                 document.getElementById('userInput').value = '';
+            }
+        }
+
+        function generateScript(input) {
+            if (input.toLowerCase().includes('fly script')) {
+                return `
+                    // Fly script
+                    function fly() {
+                        console.log("You are now flying!");
+                    }
+                    fly();`;
+            } else if (input.toLowerCase().includes('hello world')) {
+                return `
+                    // Hello World script
+                    console.log("Hello, World!");`;
+            } else {
+                return `
+                    // Generic script
+                    function ${generateFunctionName(input)}() {
+                        console.log("This is your script for ${input}");
+                    }
+                    ${generateFunctionName(input)}();`;
             }
         }
 
