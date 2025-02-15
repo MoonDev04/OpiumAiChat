@@ -8,42 +8,47 @@
         body {
             font-family: Arial, sans-serif;
             display: flex;
+            flex-direction: column;
             justify-content: center;
-            align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #f4f4f4;
+            background-color: #121212;
+            color: #ffffff;
         }
         .chat-container {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 400px;
-            max-width: 100%;
-            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
             box-sizing: border-box;
         }
         .chatbox {
-            border: 1px solid #ccc;
+            flex: 1;
+            border: 1px solid #333;
             border-radius: 4px;
             padding: 10px;
-            height: 200px;
             overflow-y: auto;
             margin-bottom: 10px;
+            background-color: #1e1e1e;
         }
         .input-group {
             display: flex;
+            padding: 10px;
+            border-top: 1px solid #333;
+            background-color: #1e1e1e;
         }
         .input-group input {
             flex: 1;
             padding: 10px;
-            border: 1px solid #ccc;
+            border: 1px solid #333;
             border-radius: 4px 0 0 4px;
             border-right: none;
+            background-color: #333;
+            color: #fff;
         }
         .input-group button {
             padding: 10px;
-            border: 1px solid #ccc;
+            border: 1px solid #333;
             border-radius: 0 4px 4px 0;
             border-left: none;
             background-color: #007bff;
@@ -76,18 +81,35 @@
                 userMessage.textContent = 'You: ' + userInput;
                 chatbox.appendChild(userMessage);
 
-                // Respond with a generic script message
+                // Respond with actual scripts based on user input
+                let responseScript = '';
+                if (userInput.toLowerCase().includes('fly script')) {
+                    responseScript = `
+                    // Fly script
+                    function fly() {
+                        console.log("You are now flying!");
+                    }
+                    fly();`;
+                } else {
+                    responseScript = `
+                    // Generic script
+                    function ${generateFunctionName(userInput)}() {
+                        console.log("This is your script for ${userInput}");
+                    }
+                    ${generateFunctionName(userInput)}();`;
+                }
+
+                // Append bot response to chatbox
                 const botMessage = document.createElement('div');
                 botMessage.textContent = 'Bot: Here is your script for "' + userInput + '":';
                 chatbox.appendChild(botMessage);
 
-                const scriptMessage = document.createElement('div');
-                scriptMessage.textContent = `
-                function ${generateFunctionName(userInput)}() {
-                    console.log("This is your script for ${userInput}");
-                }
-                ${generateFunctionName(userInput)}();`;
+                const scriptMessage = document.createElement('pre');
+                scriptMessage.textContent = responseScript;
                 chatbox.appendChild(scriptMessage);
+
+                // Scroll to the bottom of the chatbox
+                chatbox.scrollTop = chatbox.scrollHeight;
 
                 // Clear the input field
                 document.getElementById('userInput').value = '';
