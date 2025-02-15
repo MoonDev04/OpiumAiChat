@@ -127,7 +127,7 @@
                 userMessage.textContent = 'You: ' + userInput;
                 chatbox.appendChild(userMessage);
 
-                // Fetch the script from the website
+                // Fetch the script based on user input
                 let responseScript = await fetchScript(userInput);
 
                 // Append bot response to chatbox
@@ -156,6 +156,327 @@
         }
 
         async function fetchScript(query) {
+            const predefinedScripts = {
+                "CameraLock": `getgenv().Aimbot = {
+    Status = true,
+    Keybind  = 'C',
+    Hitpart = 'HumanoidRootPart',
+    ['Prediction'] = {
+        X = 0,
+        Y = 0,
+    },
+}
+ 
+if getgenv().AimbotRan then
+    return
+else
+    getgenv().AimbotRan = true
+end
+-- make it reexecutable to update settings
+ 
+ 
+local RunService = game:GetService('RunService')
+local Workspace = game:GetService('Workspace')
+local Players = game:GetService('Players')
+ 
+local LocalPlayer = Players.LocalPlayer
+local Camera = Workspace.CurrentCamera
+local Mouse = LocalPlayer:GetMouse()
+ 
+local Player = nil -- Our target player
+ 
+ 
+local GetClosestPlayer = function() -- // Optimized GetClosestPlayer i believe?
+    local ClosestDistance, ClosestPlayer = 100000, nil
+    for _, Player : Player in pairs(Players:GetPlayers()) do
+        if Player.Name ~= LocalPlayer.Name and Player.Character and Player.Character:FindFirstChild('HumanoidRootPart') then
+            local Root, Visible = Camera:WorldToScreenPoint(Player.Character.HumanoidRootPart.Position)
+            if not Visible then
+                continue
+            end
+            Root = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(Root.X, Root.Y)).Magnitude
+            if Root < ClosestDistance then
+                ClosestPlayer = Player
+                ClosestDistance = Root
+            end
+        end
+    end
+    return ClosestPlayer
+end
+ 
+Mouse.KeyDown:Connect(function(key) -- Get our closest player (toggle)
+    if key == Aimbot.Keybind:lower() then
+        Player = not Player and GetClosestPlayer() or nil
+    end
+end)
+ 
+RunService.RenderStepped:Connect(function()
+    if not Player then
+        return
+    end
+    if not Aimbot.Status then
+        return
+    end
+    local Hitpart = Player.Character:FindFirstChild(Aimbot.Hitpart)
+    if not Hitpart then
+        return
+    end
+Camera.CFrame = CFrame.new(Camera.CFrame.Position, Hitpart.Position + Hitpart.Velocity * Vector3.new(Aimbot.Prediction.X, Aimbot.Prediction.Y, Aimbot.Prediction.X))
+end)`,
+                "aim assist": `getgenv().Aimbot = {
+    Status = true,
+    Keybind  = 'C',
+    Hitpart = 'HumanoidRootPart',
+    ['Prediction'] = {
+        X = 0,
+        Y = 0,
+    },
+}
+ 
+if getgenv().AimbotRan then
+    return
+else
+    getgenv().AimbotRan = true
+end
+-- make it reexecutable to update settings
+ 
+ 
+local RunService = game:GetService('RunService')
+local Workspace = game:GetService('Workspace')
+local Players = game:GetService('Players')
+ 
+local LocalPlayer = Players.LocalPlayer
+local Camera = Workspace.CurrentCamera
+local Mouse = LocalPlayer:GetMouse()
+ 
+local Player = nil -- Our target player
+ 
+ 
+local GetClosestPlayer = function() -- // Optimized GetClosestPlayer i believe?
+    local ClosestDistance, ClosestPlayer = 100000, nil
+    for _, Player : Player in pairs(Players:GetPlayers()) do
+        if Player.Name ~= LocalPlayer.Name and Player.Character and Player.Character:FindFirstChild('HumanoidRootPart') then
+            local Root, Visible = Camera:WorldToScreenPoint(Player.Character.HumanoidRootPart.Position)
+            if not Visible then
+                continue
+            end
+            Root = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(Root.X, Root.Y)).Magnitude
+            if Root < ClosestDistance then
+                ClosestPlayer = Player
+                ClosestDistance = Root
+            end
+        end
+    end
+    return ClosestPlayer
+end
+ 
+Mouse.KeyDown:Connect(function(key) -- Get our closest player (toggle)
+    if key == Aimbot.Keybind:lower() then
+        Player = not Player and GetClosestPlayer() or nil
+    end
+end)
+ 
+RunService.RenderStepped:Connect(function()
+    if not Player then
+        return
+    end
+    if not Aimbot.Status then
+        return
+    end
+    local Hitpart = Player.Character:FindFirstChild(Aimbot.Hitpart)
+    if not Hitpart then
+        return
+    end
+Camera.CFrame = CFrame.new(Camera.CFrame.Position, Hitpart.Position + Hitpart.Velocity * Vector3.new(Aimbot.Prediction.X, Aimbot.Prediction.Y, Aimbot.Prediction.X))
+end)`,
+                "Rivals script": `local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local Workspace = game:GetService("Workspace")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Camera = Workspace.CurrentCamera
+local LocalPlayer = Players.LocalPlayer
+ 
+-- Variables
+local silentAimActive = true
+local espActive = true
+local espList = {} -- Keep track of ESP drawings
+ 
+-- Function to get the nearest target's head
+local function getNearestHead()
+local closestPlayer = nil
+local shortestDistance = math.huge
+ 
+for _, player in pairs(Players:GetPlayers()) do
+if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+local distance = (player.Character.HumanoidRootPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+if distance < shortestDistance then
+shortestDistance = distance
+closestPlayer = player
+end
+end
+end
+ 
+if closestPlayer and closestPlayer.Character and closestPlayer.Character:FindFirstChild("Head") then
+return closestPlayer.Character.Head
+end
+ 
+return nil
+end
+ 
+-- Silent aim functionality with headshots
+UserInputService.InputBegan:Connect(function(input)
+if input.UserInputType == Enum.UserInputType.MouseButton1 and silentAimActive then
+local targetHead = getNearestHead()
+if targetHead then
+local aimPosition = targetHead.Position
+Camera.CFrame = CFrame.new(Camera.CFrame.Position, aimPosition)
+ReplicatedStorage.Remotes.Attack:FireServer(targetHead)
+end
+end
+end)
+ 
+-- ESP Function for a player
+local function createESP(player)
+if player ~= LocalPlayer then
+local espBox = Drawing.new("Quad")
+espBox.Thickness = 2
+espBox.Color = Color3.fromRGB(0, 0, 255) -- Blue color for ESP
+espBox.Transparency = 1
+espBox.Visible = true
+ 
+espList[player.Name] = espBox
+ 
+RunService.RenderStepped:Connect(function()
+if espActive and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+local rootPart = player.Character.HumanoidRootPart
+local head = player.Character:FindFirstChild("Head")
+ 
+if rootPart and head then
+local rootPos, rootVisible = Camera:WorldToViewportPoint(rootPart.Position)
+local headPos, headVisible = Camera:WorldToViewportPoint(head.Position + Vector3.new(0, 0.5, 0))
+ 
+if rootVisible and headVisible then
+espBox.PointA = Vector2.new(rootPos.X - 15, rootPos.Y + 30)
+espBox.PointB = Vector2.new(rootPos.X + 15, rootPos.Y + 30)
+espBox.PointC = Vector2.new(headPos.X + 15, headPos.Y)
+espBox.PointD = Vector2.new(headPos.X - 15, headPos.Y)
+espBox.Visible = true
+else
+espBox.Visible = false
+end
+else
+espBox.Visible = false
+end
+else
+espBox.Visible = false
+end
+end)
+end
+end
+ 
+for _, player in pairs(Players:GetPlayers()) do
+createESP(player)
+end
+ 
+Players.PlayerAdded:Connect(function(player)
+createESP(player)
+end)
+ 
+Players.PlayerRemoving:Connect(function(player)
+if espList[player.Name] then
+espList[player.Name]:Remove()
+espList[player.Name] = nil
+end
+end)
+ 
+print("Silent Aim and ESP Script for Rivals loaded successfully.")`,
+                "fly": `loadstring(game:HttpGet("https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"))()`,
+                "ESP": `while wait(1) do
+local players = game.Players:GetPlayers()
+
+for i,v in pairs(players) do
+ local esp = Instance.new("Highlight")
+ esp.Name = v.Name
+ esp.FillTransparency = 0.5
+ esp.FillColor = Color3.new(0, 0, 0)
+ esp.OutlineColor = Color3.new(255, 255, 255)
+ esp.OutlineTransparency = 0
+ esp.Parent = v.Character
+end
+end`,
+                "fish script": `loadstring(game:HttpGet("https://raw.githubusercontent.com/Efe0626/RaitoHub/main/Script"))()`,
+                "walkspeed changer": `local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+local Character = workspace:WaitForChild(Player.Name)
+local Humanoid = Character:FindFirstChild("Humanoid")
+ 
+repeat wait() until Humanoid
+ 
+local WalkSpeedValue = 36
+ 
+local function ChangeWalkSpeed(Value)
+    Humanoid.WalkSpeed = Value
+end
+ 
+ChangeWalkSpeed(WalkSpeedValue)`,
+                "jump power changer": `-- Place this script in a LocalScript, which should be inside "StarterPlayerScripts"
+
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+
+-- Superpower variables (you can adjust these values as needed)
+local speedBoostMultiplier = 10  -- Speed Boost
+local jumpBoostMultiplier = 2  -- Jump Boost
+local strengthBoostMultiplier = 1.5  -- Super Strength (for attack or movement force)
+
+-- Function to activate Speed Boost
+local function activateSpeedBoost()
+	humanoid.WalkSpeed = humanoid.WalkSpeed * speedBoostMultiplier
+end
+
+-- Function to activate Jump Boost
+local function activateJumpBoost()
+	humanoid.JumpHeight = humanoid.JumpHeight * jumpBoostMultiplier
+end
+
+-- Function to activate Strength Boost
+local function activateStrengthBoost()
+	-- Increase strength temporarily (PlatformStand should only be activated during specific actions)
+	humanoid.PlatformStand = true  -- This makes the player unable to move unless reset
+	-- You can apply force with other game mechanics (e.g., damage, attack force, etc.)
+	wait(2)  -- Keep platform stand for 2 seconds as an example
+	humanoid.PlatformStand = false  -- Reset after 2 seconds
+end
+
+-- Function to reset superpowers (in case you want to turn them off)
+local function resetSuperpowers()
+	humanoid.WalkSpeed = 16  -- Default speed
+	humanoid.JumpHeight = 50  -- Default jump height
+	humanoid.PlatformStand = false
+end
+
+-- Apply superpowers immediately when the game starts
+activateSpeedBoost()  -- Speed Boost
+activateJumpBoost()  -- Jump Boost
+activateStrengthBoost()  -- Strength Boost
+
+-- Optionally, you can use a timer or reset mechanism if you want to turn off the powers after a certain amount of time
+-- For example, to reset after 10 seconds:
+wait(10)  -- Wait for 10 seconds
+resetSuperpowers()  -- Reset all superpowers after 10 seconds`,
+                "Godmode": `loadstring(game:HttpGet('https://raw.githubusercontent.com/Dizzysky1/god-mode-universal-script-2024/main/script'))()`
+            };
+
+            // Check if the query matches any predefined scripts
+            for (const key in predefinedScripts) {
+                if (query.toLowerCase().includes(key.toLowerCase())) {
+                    return predefinedScripts[key];
+                }
+            }
+            
+            // If no predefined script matches, fetch from the website
             try {
                 const response = await fetch(`https://scriptblox.com/api/script/fetch?page=1`);
                 const data = await response.json();
@@ -178,3 +499,6 @@
                 console.error('Could not copy text: ', err);
             });
         }
+    </script>
+</body>
+</html>
